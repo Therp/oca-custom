@@ -5,8 +5,6 @@
         <field name="model_id" ref="base.model_res_partner" />
         <field name="state">code</field>
         <field name="code">records.action_membership_sync()</field>
-
-        <!-- Makes it appear under Actions / More on res.partner -->
         <field name="binding_model_id" ref="base.model_res_partner" />
         <field name="binding_view_types">list,form</field>
     </record>
