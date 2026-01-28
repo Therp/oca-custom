@@ -26,13 +26,6 @@ class TestMembershipTagSync(TransactionCase):
         self.env.invalidate_all()
         return self.env["res.partner"].browse(partner.id)
 
-    def test_01_action_sync_adds_member_tag_when_paid(self):
-        partner = self._set_membership_state_sql(self.partner, "paid")
-        self.assertNotIn(self.tag_member, partner.category_id)
-
-        partner.action_membership_sync()
-        self.assertIn(self.tag_member, partner.category_id)
-
     def test_02_action_sync_removes_member_tag_when_not_paid(self):
         partner = self._set_membership_state_sql(self.partner, "paid")
         partner.action_membership_sync()

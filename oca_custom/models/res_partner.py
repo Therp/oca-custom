@@ -52,17 +52,20 @@ class ResPartner(models.Model):
             )
 
     @api.model
-    def _cron_membership_tag_sync(self, batch_size: int = 500):
+    def _cron_membership_tag_sync(self, batch_size=500):
         ICP = self.env["ir.config_parameter"].sudo()
-        cursor_key = PARAM_PREFIX + "cron_last_partner_id"
-        last_id = int(ICP.get_param(cursor_key, default="0") or 0)
-        member_tag_id = self._cfg_id("member_tag_id") or 3
+        last_id = int(
+            ICP.get_param("oca_membership_channel_sync.cron_last_partner_id", "0") or 0
+        )
+        member_tag_id = int(
+            ICP.get_param("oca_membership_channel_sync.member_tag_id", "3") or 3
+        )
 
         partners = self.sudo().search(
             [
                 ("id", ">", last_id),
                 "|",
-                ("membership_state", "in", list(MEMBER_STATES)),
+                ("membership_state", "=", "paid"),
                 ("category_id", "in", [member_tag_id]),
             ],
             order="id asc",
@@ -70,12 +73,13 @@ class ResPartner(models.Model):
         )
 
         if not partners:
-            ICP.set_param(cursor_key, "0")
+            ICP.set_param("oca_membership_channel_sync.cron_last_partner_id", "0")
             return True
 
         partners._sync_member_tag_from_membership_state()
-        ICP.set_param(cursor_key, str(partners[-1].id))
-        return True
+        ICP.set_param(
+            "oca_membership_channel_sync.cron_last_partner_id", str(partners[-1].id)
+        )
 
     def write(self, vals):
         res = super().write(vals)
