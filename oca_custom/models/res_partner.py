@@ -23,43 +23,53 @@ class ResPartner(models.Model):
             return int(val)
         return None
 
-    def _sync_member_tag_from_membership_state(self):
+    def _get_member_tag(self):
         member_tag_id = self._cfg_id("member_tag_id") or 3
-        member_tag = self.env["res.partner.category"].browse(member_tag_id).exists()
-        if not member_tag:
+        tag = self.env["res.partner.category"].browse(member_tag_id).exists()
+        if not tag:
             _logger.info(
-                "\nMember tag id=%s not found; skip membership_state tag sync\n",
+                "Member tag id=%s not found; skip membership_state tag sync",
                 member_tag_id,
             )
+        return tag
+
+    def _sync_member_tag_from_membership_state(self):
+        member_tag = self._get_member_tag()
+        if not member_tag:
             return
 
+        tag_id = member_tag.id
+
         to_add = self.filtered(
-            lambda p: p.membership_state in MEMBER_STATES
-            and member_tag not in p.category_id
+            lambda p, tag_id=tag_id: (p.membership_state in MEMBER_STATES)
+            and (tag_id not in p.category_id.ids)
         )
         to_remove = self.filtered(
-            lambda p: p.membership_state not in MEMBER_STATES
-            and member_tag in p.category_id
+            lambda p, tag_id=tag_id: (p.membership_state not in MEMBER_STATES)
+            and (tag_id in p.category_id.ids)
         )
 
         if to_add:
             to_add.with_context(skip_membership_channel_sync=True).write(
-                {"category_id": [(4, member_tag.id)]}
+                {"category_id": [(4, tag_id)]}
             )
         if to_remove:
             to_remove.with_context(skip_membership_channel_sync=True).write(
-                {"category_id": [(3, member_tag.id)]}
+                {"category_id": [(3, tag_id)]}
             )
+
+    def action_membership_sync(self):
+        self._sync_member_tag_from_membership_state()
+        return True
 
     @api.model
     def _cron_membership_tag_sync(self, batch_size=500):
         ICP = self.env["ir.config_parameter"].sudo()
-        last_id = int(
-            ICP.get_param("oca_membership_channel_sync.cron_last_partner_id", "0") or 0
-        )
-        member_tag_id = int(
-            ICP.get_param("oca_membership_channel_sync.member_tag_id", "3") or 3
-        )
+
+        cursor_key = PARAM_PREFIX + "cron_last_partner_id"
+        last_id = int(ICP.get_param(cursor_key, "0") or 0)
+
+        member_tag_id = int(ICP.get_param(PARAM_PREFIX + "member_tag_id", "3") or 3)
 
         partners = self.sudo().search(
             [
@@ -73,13 +83,12 @@ class ResPartner(models.Model):
         )
 
         if not partners:
-            ICP.set_param("oca_membership_channel_sync.cron_last_partner_id", "0")
+            ICP.set_param(cursor_key, "0")
             return True
 
         partners._sync_member_tag_from_membership_state()
-        ICP.set_param(
-            "oca_membership_channel_sync.cron_last_partner_id", str(partners[-1].id)
-        )
+        ICP.set_param(cursor_key, str(partners[-1].id))
+        return True
 
     def write(self, vals):
         res = super().write(vals)

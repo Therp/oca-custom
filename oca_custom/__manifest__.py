@@ -17,6 +17,7 @@
         "membership",
     ],
     "data": [
+        "data/ir_cron_data.xml",
         "views/res_config_settings.xml",
         "views/res_partner.xml",
         "views/document_knowledge.xml",
