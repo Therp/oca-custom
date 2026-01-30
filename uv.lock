@@ -721,7 +721,7 @@ requires-dist = [
     { name = "odoo14-addon-github-connector-odoo" },
     { name = "odoo14-addon-knowledge" },
     { name = "odoo14-addon-l10n-ch-base-bank" },
-    { name = "odoo14-addon-l10n-ch-pain-base" },
+    { name = "odoo14-addon-l10n-ch-pain-base", git = "https://github.com/Therp/l10n-switzerland?subdirectory=setup%2Fl10n_ch_pain_base&branch=14.0-l10n_ch_pain_base-address_fix" },
     { name = "odoo14-addon-l10n-ch-pain-credit-transfer" },
     { name = "odoo14-addon-mass-editing" },
     { name = "odoo14-addon-mass-operation-abstract" },
@@ -1324,15 +1324,12 @@ wheels = [
 
 [[package]]
 name = "odoo14-addon-l10n-ch-pain-base"
-version = "14.0.1.0.1.dev4"
-source = { registry = "https://pypi.org/simple" }
+version = "14.0.1.0.1.dev5"
+source = { git = "https://github.com/Therp/l10n-switzerland?subdirectory=setup%2Fl10n_ch_pain_base&branch=14.0-l10n_ch_pain_base-address_fix#f5b7db63c50add28c87dabbb6ca57fa2deedb381" }
 dependencies = [
     { name = "odoo" },
     { name = "odoo14-addon-account-banking-pain-base" },
     { name = "odoo14-addon-l10n-ch-base-bank" },
-]
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/7d/1a/3f88b1520f192d27883794c1f4afb59b75eb3c30e3d6f0b8fc143ea1965f/odoo14_addon_l10n_ch_pain_base-14.0.1.0.1.dev4-py3-none-any.whl", hash = "sha256:94ac1d9ac344f2276b27328985f8a600fb6f63c04d6dbbc9dd644d377ccd1645", size = 28150, upload-time = "2024-02-24T04:56:38.637Z" },
 ]
 
 [[package]]
