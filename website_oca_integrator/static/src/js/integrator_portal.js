@@ -7,44 +7,36 @@ odoo.define("website_oca_integrator.website_oca_integrator", function (require) 
     const publicWidget = require("web.public.widget");
 
     publicWidget.registry.integratorModuleSelector = publicWidget.Widget.extend({
-        selector: "input.module_js_select2",
+        selector: ".module_js_select2",
 
         /**
          * @override
          */
         start: function () {
             this.$el.select2({
-                tags: true,
+                tags: false,
                 maximumInputLength: 25,
-                maximumSelectionSize: 5,
+                maximumSelectionLength: 5,
                 ajax: {
                     url: "/my/account/get_developed_modules",
                     dataType: "json",
-                    data: (term) => {
-                        return {query: term, limit: 25};
-                    },
-                    results: (data) => {
-                        const res = [];
-                        _.each(data, (x) => {
-                            res.push({id: x.id, text: x.name});
-                        });
-                        return {results: res};
-                    },
-                },
-                initSelection: (element, callback) =>
-                    $.ajax({
-                        type: "GET",
-                        url: "/my/account/get_favourite_modules",
-                        dataType: "json",
-                        success: (data) => {
-                            const res = [];
-                            _.each(data, (x) => {
-                                res.push({id: x.id, text: x.name});
-                            });
-                            element.val("");
-                            callback(res);
-                        },
+                    data: (params) => ({query: params.term, limit: 25}),
+                    processResults: (data) => ({
+                        results: _.map(data, (x) => ({id: x.id, text: x.name})),
                     }),
+                },
+            });
+            $.ajax({
+                type: "GET",
+                url: "/my/account/get_favourite_modules",
+                dataType: "json",
+                success: (data) => {
+                    const options = _.map(
+                        data,
+                        (x) => new Option(x.name, x.id, true, true)
+                    );
+                    this.$el.append(options).trigger("change");
+                },
             });
         },
     });

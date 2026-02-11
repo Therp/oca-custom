@@ -20,13 +20,12 @@ odoo.define("website_oca_integrator.portal", function (require) {
                 run: "text 123456789",
             },
             {
-                trigger: "#s2id_autogen2",
+                trigger: ".module_js_select2 + .select2 .select2-search__field",
                 run: "text Prod.",
             },
             {
-                trigger: ".select2-match",
-                auto: true,
-                in_modal: false,
+                trigger: ".select2-results__option",
+                run: "click",
             },
             {
                 trigger: "input[name='github_organization']",
@@ -34,7 +33,7 @@ odoo.define("website_oca_integrator.portal", function (require) {
             },
             {
                 trigger: "textarea[name='website_short_description']",
-                extra_trigger: "#s2id_autogen1 > ul",
+                extra_trigger: ".select2-selection__choice",
                 run: "text My company description",
             },
             {

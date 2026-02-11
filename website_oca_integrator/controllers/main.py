@@ -2,13 +2,11 @@
 # Part of Odoo. See Odoo LICENSE file for full copyright and licensing details.
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-import werkzeug
+from werkzeug.urls import url_encode
 
 from odoo import http
 from odoo.http import request
 from odoo.tools.translate import _
-
-from odoo.addons.http_routing.models.ir_http import slug, unslug
 
 
 class WebsiteIntegrator(http.Controller):
@@ -75,7 +73,7 @@ class WebsiteIntegrator(http.Controller):
 
         if country:
             base_integrator_domain += [("country_id", "=", country.id)]
-            url = "/integrators/country/" + slug(country)
+            url = "/integrators/country/" + request.env["ir.http"]._slug(country)
         else:
             url = "/integrators"
 
@@ -98,9 +96,9 @@ class WebsiteIntegrator(http.Controller):
         # search integrators matching current search parameters
         integrator_ids = partner_obj.sudo().search(
             base_integrator_domain,
-            order="grade_id ASC, implemented_count DESC,"
+            order="grade_id ASC, implemented_partner_count DESC,"
             "contributor_count DESC, member_count DESC,"
-            "display_name ASC",
+            "name ASC",
             offset=pager["offset"],
             limit=self._references_per_page,
         )
@@ -118,7 +116,7 @@ class WebsiteIntegrator(http.Controller):
             "google_map_integrator_ids": google_map_integrator_ids,
             "pager": pager,
             "searches": post,
-            "search_path": "%s" % werkzeug.url_encode(post),
+            "search_path": "?%s" % url_encode(post),
             "google_maps_api_key": google_maps_api_key,
         }
 
@@ -181,7 +179,7 @@ class WebsiteIntegrator(http.Controller):
         """
         Display integrator's detail.
         """
-        _, integrator_id = unslug(integrator_id)
+        _, integrator_id = request.env["ir.http"]._unslug(integrator_id)
         current_country = None
         country_id = post.get("country_id")
 
@@ -192,7 +190,7 @@ class WebsiteIntegrator(http.Controller):
         if integrator_id:
             integrator = request.env["res.partner"].sudo().browse(integrator_id)
 
-            is_website_publisher = request.env["res.users"].has_group(
+            is_website_publisher = request.env.user.has_group(
                 "website.group_website_publisher"
             )
 
@@ -243,7 +241,7 @@ class WebsiteIntegrator(http.Controller):
         self, integrator_id=None, country_name=None, country_id=0, page=1, **post
     ):
         integrator = integrator_id
-        integrator_name, integrator_id = unslug(integrator_id)
+        integrator_name, integrator_id = request.env["ir.http"]._unslug(integrator_id)
         country = request.env["res.country"]
         partner = request.env["res.partner"]
 
@@ -318,7 +316,7 @@ class WebsiteIntegrator(http.Controller):
 
         contributors = partner.sudo().search(
             country_domain,
-            order="display_name ASC",
+            order="name ASC",
             offset=pager["offset"],
             limit=self._references_per_page,
         )
@@ -333,7 +331,7 @@ class WebsiteIntegrator(http.Controller):
             "current_country_id": current_country and current_country["id"] or 0,
             "pager": pager,
             "post": post,
-            "search": "?%s" % werkzeug.url_encode(post),
+            "search": "?%s" % url_encode(post),
         }
 
         return request.render("website_oca_integrator.contributor_index", values)

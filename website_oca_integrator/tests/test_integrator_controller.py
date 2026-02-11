@@ -48,29 +48,25 @@ class TestIntegratorController(HttpCase):
         self._test_website_page("/integrators/test-integrator")
 
     def test_integrator_page(self):
-        self._test_website_page("/integrators/country/{}".format(self.country_india.id))
+        self._test_website_page(f"/integrators/country/{self.country_india.id}")
         self._test_website_page("/integrators")
         self._test_website_page("/integrators?search=%s" % self.partner.name)
         self._test_website_page("/integrators?&country_all=True")
 
     def test_integrator_detail_page(self):
-        self._test_website_page("/integrators/country/{}".format(self.country_india.id))
+        self._test_website_page(f"/integrators/country/{self.country_india.id}")
 
-        self._test_website_page("/integrators/{}".format(slug(self.partner)))
+        self._test_website_page(f"/integrators/{slug(self.partner)}")
 
         self._test_website_page(
-            "/integrators/{}?country_id={}".format(
-                slug(self.partner), self.country_india.id
-            )
+            f"/integrators/{slug(self.partner)}?country_id={self.country_india.id}"
         )
 
     def test_contributor_list_page(self):
         self._test_website_page(
-            "/integrators/{}/contributors/country/{}?search={}".format(
-                slug(self.partner), slug(self.country_india), self.partner.name
-            )
+            f"/integrators/{slug(self.partner)}/contributors/country/{slug(self.country_india)}?search={self.partner.name}"
         )
 
     def test_member_page(self):
-        self._test_website_page("/members/{}".format(slug(self.contact1)))
-        self._test_website_page("/members/{}".format(slug(self.contact2)))
+        self._test_website_page(f"/members/{slug(self.contact1)}")
+        self._test_website_page(f"/members/{slug(self.contact2)}")

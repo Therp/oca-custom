@@ -149,5 +149,5 @@ class TestGithubContributorModule(SavepointCase):
             self.partner.cron_create_github_user_module()
         self.assertEqual(
             log_catcher.output[0],
-            "{}:{}:Error while fetching user 'Contributor 1'.".format(level, logger),
+            f"{level}:{logger}:Error while fetching user 'Contributor 1'.",
         )

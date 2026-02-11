@@ -106,7 +106,7 @@ License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
                                                 >
                                                     <img
                                                         class="img"
-                                                        t-attf-src="/website/image/product.product/{{membership.membership_id.id}}/image/50x50"
+                                                        t-attf-src="/web/image/product.product/{{membership.membership_id.id}}/image_128"
                                                     />
                                                 </t>
                                             </t>
@@ -146,7 +146,7 @@ License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
                                     style="margin-top: 12px; display: flex; flex-wrap: wrap"
                                 >
                                     <div
-                                        class="col-xs-6 text-center mb8 border border-secondary"
+                                        class="col-6 text-center mb8 border border-secondary"
                                         t-attf-style="left: #{ '25%' if len(memberships_lines)==1 else ''}"
                                         t-foreach="memberships_lines.sorted(key=lambda membership: membership.date, reverse=True)[:5]"
                                         t-as="membership"
@@ -154,7 +154,7 @@ License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
                                         <div style="border: solid 1px #ccc;">
                                             <img
                                                 class="img"
-                                                t-attf-src="/website/image/product.product/{{membership.membership_id.id}}/image/90x90"
+                                                t-attf-src="/web/image/product.product/{{membership.membership_id.id}}/image_128"
                                             />
                                         </div>
                                         <span t-field="membership.membership_id.name" />
@@ -180,7 +180,7 @@ License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
         inherit_id="website_partner.partner_detail"
         name="Contributor Github Link"
     >
-        <xpath expr="//div[hasclass('col-lg-4')]/address" position="inside">
+        <xpath expr="//div[@t-field='partner.self']" position="after">
             <t t-if="partner and partner.github_url">
                 <div>
                     <i class="fa fa-github" style="font-size:16px" />
@@ -206,7 +206,7 @@ License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
         name="Contributor Modules Lists"
         inherit_id="website_partner.partner_detail"
     >
-        <xpath expr="//div[hasclass('col-lg-8')]" position="inside">
+        <xpath expr="//div[hasclass('col-lg-9')]" position="inside">
             <t
                 t-set="product_templates"
                 t-value="partner.contributor_module_line_ids.sorted(key='date_pr_merged',reverse=True).mapped('product_template_id').filtered('website_published')"

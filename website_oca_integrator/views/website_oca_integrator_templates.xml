@@ -91,7 +91,7 @@ License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
                     <div>
                         <p t-if="not integrators">No result found</p>
                         <t t-foreach="integrators" t-as="integrator">
-                            <div class="media">
+                            <div class="media mb-2">
                                 <a
                                     class="pull-left"
                                     t-attf-href="/integrators/#{slug(integrator)}?#{current_grade and 'grade_id=%s&amp;' % current_grade.id}#{current_country and 'country_id=%s' % current_country.id}"
@@ -122,9 +122,9 @@ License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
                                             t-as="sponsorship"
                                         >
                                             <img
-                                                t-att-src="'data:image/png;base64,%s'%to_text(sponsorship.sponsorship_id.image_128)"
-                                                height="50"
-                                                width="50"
+                                                t-if="sponsorship.sponsorship_id.image_128"
+                                                t-att-src="image_data_uri(sponsorship.sponsorship_id.image_128)"
+                                                style="height: 50px; width: 50px;"
                                                 alt=""
                                             />
                                         </t>
@@ -140,8 +140,8 @@ License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
                                                 t-attf-href="/integrators/#{slug(integrator)}#reference_column"
                                             >
                                                 <t
-                                                    t-esc="integrator.implemented_count"
-                                                />
+                                                t-esc="integrator.implemented_partner_count"
+                                            />
                                                 reference(s)
                                             </a>
                                         </small>
@@ -152,8 +152,8 @@ License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
                                                 t-attf-href="/integrators/#{slug(integrator)}#contributor_member_column"
                                             >
                                                 <t
-                                                    t-esc="integrator.contributor_count"
-                                                />
+                                                t-esc="integrator.contributor_count"
+                                            />
                                                 contributor(s)
                                             </a>
                                         </small>
@@ -230,12 +230,12 @@ License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
                 <!-- modal end -->
                 <h3>World Map
                     <button
-                        class="btn btn-link"
-                        data-toggle="modal"
-                        data-target=".partner_map_modal"
-                    >
-                        <span class="fa fa-external-link" />
-                    </button>
+                    class="btn btn-link"
+                    data-toggle="modal"
+                    data-target=".partner_map_modal"
+                >
+                    <span class="fa fa-external-link" />
+                </button>
                 </h3>
                 <ul class="nav">
                     <iframe
@@ -310,8 +310,8 @@ License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
                             <div class="well" style="padding: 4px; text-align: center;">
                                 <h4>
                                     <a
-                                        t-attf-href="/integrators/#{slug(integrator)}/contributors/"
-                                    >
+                                    t-attf-href="/integrators/#{slug(integrator)}/contributors/"
+                                >
                                         Click here
                                     </a>
                                     to view Contributors/Members
@@ -341,7 +341,7 @@ License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
         inherit_id="website_partner.partner_detail"
         name="Integrator Github Link"
     >
-        <xpath expr="//div[hasclass('col-lg-4')]/address" position="inside">
+        <xpath expr="//div[@t-field='partner.self']" position="after">
             <t t-if="integrator and integrator.github_organization_url">
                 <div>
                     <i class="fa fa-github" style="font-size: 16px" />
@@ -358,16 +358,13 @@ License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
         inherit_id="website_crm_partner_assign.grade_in_detail"
         priority="100"
     >
-        <xpath expr="//h3" position="replace">
-            <t t-if="not integrator">
-                <h3
-                    class="col-md-12 text-center text-muted"
-                    t-if="partner.grade_id and partner.grade_id.website_published"
-                >
-                    <span t-field="partner.grade_id" />
-                    Partner
-                </h3>
-            </t>
+        <xpath
+            expr="//span[@t-if='partner.grade_id and partner.grade_id.website_published']"
+            position="attributes"
+        >
+            <attribute
+                name="t-if"
+            >not integrator and partner.grade_id and partner.grade_id.website_published</attribute>
         </xpath>
     </template>
     <!-- Integrator references -->
@@ -407,15 +404,15 @@ License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
                 >
                     Modules
                     <t t-if="display_all_modules">
-                        <a
-                            t-attf-href="/shop/?&amp;integrator=#{slug(partner)}"
-                            style="margin-top: -10px;"
-                            class="btn btn-info pull-right"
-                            role="button"
-                        >View
+                    <a
+                        t-attf-href="/shop/?&amp;integrator=#{slug(partner)}"
+                        style="margin-top: -10px;"
+                        class="btn btn-info pull-right"
+                        role="button"
+                    >View
                             All Modules
                         </a>
-                    </t>
+                </t>
                 </h3>
             </div>
             <div class="row">
