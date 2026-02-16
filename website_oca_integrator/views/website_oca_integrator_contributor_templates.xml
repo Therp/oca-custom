@@ -9,7 +9,7 @@ License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
         <t t-call="website.layout">
             <t t-set="additional_title">OCA Contributors</t>
             <div id="wrap">
-                <div class="oe_structure">
+                <div id="oe_structure_contributor_header" class="oe_structure">
                     <section>
                         <div class="container">
                             <div class="row">
@@ -120,7 +120,7 @@ License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
                         </div>
                     </div>
                 </div>
-                <div class="oe_structure" />
+                <div id="oe_structure_contributor_footer" class="oe_structure" />
             </div>
         </t>
     </template>

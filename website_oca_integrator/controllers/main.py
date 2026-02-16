@@ -116,7 +116,7 @@ class WebsiteIntegrator(http.Controller):
             "google_map_integrator_ids": google_map_integrator_ids,
             "pager": pager,
             "searches": post,
-            "search_path": "?%s" % url_encode(post),
+            "search_path": f"?{url_encode(post)}",
             "google_maps_api_key": google_maps_api_key,
         }
 
@@ -223,6 +223,8 @@ class WebsiteIntegrator(http.Controller):
 
     @http.route(
         [
+            "/integrators/<integrator_id>/contributors/country/<model('res.country'):country>",
+            "/integrators/<integrator_id>/contributors/country/<model('res.country'):country>/page/<int:page>",
             "/integrators/<integrator_id>/contributors",
             "/integrators/<integrator_id>/contributors/page/<int:page>",
             "/integrators/<integrator_id>/contributors/country/<int:country_id>",
@@ -238,7 +240,13 @@ class WebsiteIntegrator(http.Controller):
         website=True,
     )
     def integrator_contributors(
-        self, integrator_id=None, country_name=None, country_id=0, page=1, **post
+        self,
+        integrator_id=None,
+        country=None,
+        country_name=None,
+        country_id=0,
+        page=1,
+        **post,
     ):
         integrator = integrator_id
         integrator_name, integrator_id = request.env["ir.http"]._unslug(integrator_id)
@@ -256,7 +264,8 @@ class WebsiteIntegrator(http.Controller):
             ("parent_id", "=", integrator_id),
         ]
 
-        if post_name:
+        if country:
+            country_id = country.id
             country_domain += [
                 "|",
                 ("name", "ilike", post_name),
@@ -300,7 +309,7 @@ class WebsiteIntegrator(http.Controller):
 
         base_url = "/integrators/{}/contributors{}".format(
             integrator,
-            "/country/%s" % country_id if country_id else "",
+            f"/country/{country_id}" if country_id else "",
         )
 
         contributors_count = partner.sudo().search_count(country_domain)
@@ -331,7 +340,7 @@ class WebsiteIntegrator(http.Controller):
             "current_country_id": current_country and current_country["id"] or 0,
             "pager": pager,
             "post": post,
-            "search": "?%s" % url_encode(post),
+            "search": f"?{url_encode(post)}",
         }
 
         return request.render("website_oca_integrator.contributor_index", values)

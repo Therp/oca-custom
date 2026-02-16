@@ -21,13 +21,13 @@ License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
         <t t-call="website.layout">
             <t t-set="additional_title">OCA Integrators</t>
             <div id="wrap">
-                <div class="oe_structure" />
+                <div id="oe_structure_integrator_layout_top" class="oe_structure" />
                 <div class="container mt16">
                     <div class="row">
-                        <t t-raw="ref_content" />
+                        <t t-out="ref_content" />
                     </div>
                 </div>
-                <div class="oe_structure" />
+                <div id="oe_structure_integrator_layout_bottom" class="oe_structure" />
             </div>
         </t>
     </template>
@@ -74,10 +74,14 @@ License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
                 </div>
                 <!-- integrators content -->
                 <div class="col-lg-8 offset-lg-1" id="ref_content">
-                    <div class="d-flex p-2">
+                    <div class="d-flex flex-wrap align-items-center gap-3 py-2">
                         <t t-call="website.pager" />
-                        <form action="" method="get" class="form-inline ml-auto">
-                            <div class="form-group">
+                        <form
+                            action=""
+                            method="get"
+                            class="d-flex gap-2 align-items-center ms-auto"
+                        >
+                            <div class="flex-grow-1">
                                 <input
                                     type="text"
                                     name="search"
@@ -91,15 +95,15 @@ License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
                     <div>
                         <p t-if="not integrators">No result found</p>
                         <t t-foreach="integrators" t-as="integrator">
-                            <div class="media mb-2">
+                            <div class="d-flex gap-3 mb-4 oca-integrator-card">
                                 <a
-                                    class="pull-left"
+                                    class="flex-shrink-0 d-block"
                                     t-attf-href="/integrators/#{slug(integrator)}?#{current_grade and 'grade_id=%s&amp;' % current_grade.id}#{current_country and 'country_id=%s' % current_country.id}"
                                     t-field="integrator.image_1920"
-                                    t-options='{"widget": "image", "class": "media-object", "max_width": 128}'
+                                    t-options='{"widget": "image", "class": "img img-fluid rounded", "max_width": 128}'
                                 />
                                 <div
-                                    class="media-body o_partner_body"
+                                    class="flex-grow-1 o_partner_body"
                                     style="min-height: 64px;"
                                 >
                                     <a
@@ -125,7 +129,13 @@ License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
                                                 t-if="sponsorship.sponsorship_id.image_128"
                                                 t-att-src="image_data_uri(sponsorship.sponsorship_id.image_128)"
                                                 style="height: 50px; width: 50px;"
+                                                t-att-title="sponsorship.grade_id and sponsorship.grade_id.name or ''"
                                                 alt=""
+                                            />
+                                            <span
+                                                t-if="sponsorship.grade_id"
+                                                class="ms-2 small text-muted"
+                                                t-field="sponsorship.grade_id.name"
                                             />
                                         </t>
                                     </t>
@@ -376,7 +386,10 @@ License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
             >References
             </h3>
             <div t-foreach="references" t-as="reference" class="media">
-                <a class="pull-left" t-attf-href="/customers/#{slug(reference)}">
+                <a
+                    class="flex-shrink-0 d-block"
+                    t-attf-href="/customers/#{slug(reference)}"
+                >
                     <span
                         t-field="reference.image_128"
                         t-options='{"widget": "image", "class": "center-block"}'

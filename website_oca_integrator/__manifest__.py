@@ -11,11 +11,15 @@
     "depends": [
         "base",
         "website",
+        "web_tour",
         "website_crm_partner_assign",
         "website_sale",
         "membership",
         "website_membership",
         "website_customer",
+        "github_connector",
+        "github_connector_odoo",
+        "apps_product_creator",
     ],
     "data": [
         "security/ir.model.access.csv",
@@ -31,8 +35,9 @@
     "assets": {
         "web.assets_frontend": [
             "website_oca_integrator/static/src/js/integrator_portal.js",
+            "website_oca_integrator/static/src/scss/website_oca_integrator.scss",
         ],
-        "website.assets_tests": [
+        "web.assets_tests": [
             "website_oca_integrator/static/src/js/integrator_portal_tour.js",
         ],
     },
