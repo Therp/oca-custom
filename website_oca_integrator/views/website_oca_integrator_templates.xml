@@ -76,19 +76,24 @@ License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
                 <div class="col-lg-8 offset-lg-1" id="ref_content">
                     <div class="d-flex flex-wrap align-items-center gap-3 py-2">
                         <t t-call="website.pager" />
-                        <form
-                            action=""
-                            method="get"
-                            class="d-flex gap-2 align-items-center ms-auto"
-                        >
-                            <div class="flex-grow-1">
+
+                        <form action="" method="get" class="flex-grow-1">
+                            <div class="input-group" role="search">
                                 <input
                                     type="text"
                                     name="search"
-                                    class="search-query form-control"
+                                    class="search-query form-control border-0 bg-light"
                                     placeholder="Search"
                                     t-att-value="searches.get('search', '')"
                                 />
+                                <button
+                                    type="submit"
+                                    aria-label="Search"
+                                    title="Search"
+                                    class="oe_search_button btn btn-light"
+                                >
+                                    <i class="oi oi-search" />
+                                </button>
                             </div>
                         </form>
                     </div>
@@ -267,11 +272,8 @@ License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
                             <a
                                 t-attf-href="/integrators#{current_country and '/country/%s' % slug(current_country)}"
                             >
-                                Our Integrators
+                                <i class="fa fa-chevron-left me-2" /> Our Integrators
                             </a>
-                        </li>
-                        <li class="active">
-                            <span t-field="integrator.display_name" />
                         </li>
                     </ol>
                 </div>
