@@ -24,10 +24,41 @@ License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
                 <div class="container">
                     <div class="row">
                         <div class="col-md-3 mb32" id="left_column">
-                            <ul class="nav nav-pills nav-stacked mt16">
+                            <!-- Compute total for "All Countries" badge -->
+                            <t t-set="all_countries_count" t-value="0" />
+                            <t t-foreach="countries" t-as="c">
+                                <t t-if="c.get('country_id')">
+                                    <t
+                                        t-set="all_countries_count"
+                                        t-value="all_countries_count + (c.get('country_id_count') or 0)"
+                                    />
+                                </t>
+                            </t>
+
+                            <ul class="nav nav-pills flex-column mt16">
+                                <!-- Header: Location + All Countries link -->
                                 <li class="nav-header">
-                                    <h3>Location</h3>
+                                    <div
+                                        class="d-flex align-items-baseline justify-content-between flex-wrap gap-2"
+                                    >
+                                        <h3 class="h4 mb-0">Location</h3>
+
+                                        <a
+                                            t-if="current_country_id"
+                                            class="small text-muted text-decoration-none"
+                                            t-attf-href="/integrators/#{ integrator }/contributors#{ search }"
+                                        >
+                                            All Countries
+                                            <span
+                                            class="badge rounded-pill text-bg-secondary ms-1"
+                                        >
+                                            <t t-esc="all_countries_count or '0'" />
+                                        </span>
+                                        </a>
+                                    </div>
                                 </li>
+
+                                <!-- Country list -->
                                 <t t-foreach="countries" t-as="country">
                                     <li
                                         t-if="country['country_id']"
@@ -37,7 +68,10 @@ License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
                                             t-attf-href="/integrators/#{ integrator }/contributors#{ country['country_id'][0] and '/country/%s' % slug(country['country_id']) or '' }#{ search }"
                                         >
                                             <t t-esc="country['country_id'][1]" />
-                                            <span class="badge pull-right">
+
+                                            <span
+                                                class="badge float-end text-bg-secondary"
+                                            >
                                                 <t
                                                     t-esc="country['country_id_count'] or '0'"
                                                 />
@@ -50,7 +84,7 @@ License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
                         <div class="col-md-8" id="ref_content">
                             <div class='navbar'>
                                 <t t-call="website.pager">
-                                    <t t-set="classname">pull-left</t>
+                                    <t t-set="classname">float-start</t>
                                 </t>
                                 <form action="" method="get" class="flex-grow-1">
                                     <div class="input-group" role="search">
@@ -79,7 +113,7 @@ License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
                                 <t t-foreach="contributors" t-as="contributor">
                                     <div class="media">
                                         <a
-                                            class="pull-left"
+                                            class="me-3 d-block"
                                             style="margin-top: 12px;"
                                             t-attf-href="/members/#{slug(contributor)}"
                                             t-field="contributor.image_1920"
@@ -206,6 +240,35 @@ License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
                     </a>
                 </div>
             </t>
+        </xpath>
+    </template>
+    <template
+        id="contributor_member_breadcrumb_integrators"
+        inherit_id="website_partner.partner_detail"
+        name="Member Breadcrumb to Integrators"
+    >
+        <!-- breadcrumb -->
+        <xpath expr="//div[@t-field='partner.self']" position="before">
+            <nav aria-label="breadcrumb" class="mb-3">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item">
+                        <a href="/integrators">Integrators</a>
+                    </li>
+
+                    <li
+                        class="breadcrumb-item"
+                        t-if="partner.parent_id and partner.parent_id.is_integrator and partner.parent_id.website_published"
+                    >
+                        <a t-attf-href="/integrators/#{slug(partner.parent_id)}">
+                            <t t-esc="partner.parent_id.name" />
+                        </a>
+                    </li>
+
+                    <li class="breadcrumb-item active" aria-current="page">
+                        <t t-esc="partner.name" />
+                    </li>
+                </ol>
+            </nav>
         </xpath>
     </template>
     <template
