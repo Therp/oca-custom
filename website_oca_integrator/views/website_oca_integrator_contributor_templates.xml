@@ -248,8 +248,11 @@ License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
         name="Member Breadcrumb to Integrators"
     >
         <!-- breadcrumb -->
-        <xpath expr="//div[@t-field='partner.self']" position="before">
-            <nav aria-label="breadcrumb" class="mb-3">
+        <xpath
+            expr="//div[@itemscope and contains(@itemtype, 'schema.org/Organization')]"
+            position="before"
+        >
+            <nav aria-label="breadcrumb" class="mb-3 mt-2">
                 <ol class="breadcrumb mb-0">
                     <li class="breadcrumb-item">
                         <a href="/integrators">Integrators</a>
