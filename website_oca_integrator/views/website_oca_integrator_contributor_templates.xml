@@ -243,38 +243,6 @@ License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
         </xpath>
     </template>
     <template
-        id="contributor_member_breadcrumb_integrators"
-        inherit_id="website_partner.partner_detail"
-        name="Member Breadcrumb to Integrators"
-    >
-        <!-- breadcrumb -->
-        <xpath
-            expr="//div[@itemscope and contains(@itemtype, 'schema.org/Organization')]"
-            position="before"
-        >
-            <nav aria-label="breadcrumb" class="mb-3 mt-2">
-                <ol class="breadcrumb mb-0">
-                    <li class="breadcrumb-item">
-                        <a href="/integrators">Integrators</a>
-                    </li>
-
-                    <li
-                        class="breadcrumb-item"
-                        t-if="partner.parent_id and partner.parent_id.is_integrator and partner.parent_id.website_published"
-                    >
-                        <a t-attf-href="/integrators/#{slug(partner.parent_id)}">
-                            <t t-esc="partner.parent_id.name" />
-                        </a>
-                    </li>
-
-                    <li class="breadcrumb-item active" aria-current="page">
-                        <t t-esc="partner.name" />
-                    </li>
-                </ol>
-            </nav>
-        </xpath>
-    </template>
-    <template
         id="contributor_modules_list"
         name="Contributor Modules Lists"
         inherit_id="website_partner.partner_detail"

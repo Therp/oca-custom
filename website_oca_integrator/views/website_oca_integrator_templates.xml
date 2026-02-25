@@ -4,18 +4,6 @@ Copyright 2018 Surekha Technologies (https://www.surekhatech.com)
 License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 -->
 <odoo>
-    <!-- Add integrators link in footer -->
-    <template
-        id="integrator_footer"
-        inherit_id="website.footer_custom"
-        name="Footer Integrators Link"
-    >
-        <xpath expr="//div[@id='connect']/ul" position="inside">
-            <li>
-                <a href="/integrators">Integrators</a>
-            </li>
-        </xpath>
-    </template>
     <!-- Integrator layout -->
     <template id="integrator_layout" name="Integrators Layout">
         <t t-call="website.layout">
